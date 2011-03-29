@@ -181,6 +181,36 @@ public abstract class TrackCollection extends JPanel implements MouseListener, L
         return midiPlayer.getInstruments();
     }
 
+    public long getLongest(){
+        ArrayList<Track> list = getTracks();
+        long max = 0;
+        for(int i = 0; i < list.size(); i++){
+            max = Math.max(max, list.get(i).getLength());
+        }
+        return max;
+    }
+
+    private void updateTrackWidth(){
+        long maxLength = getLongest();
+        ArrayList<Track> list = getTracks();
+        for(int i = 0; i < list.size(); i++){
+            Track track = list.get(i);
+            int width = (int)(((double)track.getLength()/maxLength)*getWidth());
+            if(width < 150){
+                width = 150;
+            }
+            list.get(i).setPreferredSize(new Dimension(width,50));
+            list.get(i).setMaximumSize(new Dimension(width,50));
+        }
+    }
+
+    public void timeUpdated(long time){
+        ArrayList<Track> tracks = getTracks();
+        for(int i = 0; i < tracks.size(); i++){
+            tracks.get(i).timeUpdated(time);
+        }
+    }
+
     public void addMenuLoadFile(JMenu menuAddTrack){
         JMenuItem itemLoadFile = new JMenuItem("From file");
         itemLoadFile.addActionListener(new ActionListener() {
@@ -289,33 +319,10 @@ public abstract class TrackCollection extends JPanel implements MouseListener, L
         }
     }
 
-    public long getLongest(){
-        ArrayList<Track> list = getTracks();
-        long max = 0;
-        for(int i = 0; i < list.size(); i++){
-            max = Math.max(max, list.get(i).getLength());
-        }
-        return max;
-    }
-
-    private void updateTrackWidth(){
-        long maxLength = getLongest();        
-        ArrayList<Track> list = getTracks();
-        for(int i = 0; i < list.size(); i++){
-            Track track = list.get(i);
-            int width = (int)(((double)track.getLength()/maxLength)*getWidth());
-            list.get(i).setPreferredSize(new Dimension(width,50));
-            list.get(i).setMaximumSize(new Dimension(width,50));            
-        }
-    }
+    
 
     public abstract void addElements(JPopupMenu popup, Object caller);
 
-    public void timeUpdated(long time){
-        ArrayList<Track> tracks = getTracks();
-        for(int i = 0; i < tracks.size(); i++){
-            tracks.get(i).timeUpdated(time);
-        }
-    }
+    
 
 }

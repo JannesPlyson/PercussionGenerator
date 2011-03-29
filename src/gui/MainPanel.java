@@ -11,7 +11,7 @@ import java.awt.Dimension;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.sound.midi.Instrument;
-import javax.swing.Box;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
@@ -40,14 +40,17 @@ public class MainPanel extends JPanel implements LanguageDependent{
         //midiPlayer = new MidiPlayerTimer();
         midiPlayer = new MidiPlayerTimer();
         createTrackCollection();
-        ((MidiPlayerTimer)midiPlayer).setTrackCollection(trackCollection);
+        ((MidiPlayerTimer)midiPlayer).setTrackCollection(trackCollection);        
+        trackCollection.setBorder(BorderFactory.createTitledBorder("Tracks"));
         this.add(trackCollection,BorderLayout.CENTER);
         JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-        inputPanel.setPreferredSize(new Dimension(200,100));        
-        this.add(inputPanel,BorderLayout.EAST);
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
+        //inputPanel.setPreferredSize(new Dimension(250,100));
+        this.add(inputPanel,BorderLayout.SOUTH);
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Input"));        
         inputPanel.add(new TappingPanel(trackCollection));        
-        inputPanel.add(new MicrophoneTappingPanel(trackCollection));        
+        inputPanel.add(new MicrophoneTappingPanel(trackCollection));
+        inputPanel.add(new LoadFilePanel(trackCollection));
         updateLanguage(labels);
     }
 

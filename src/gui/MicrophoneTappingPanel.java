@@ -11,6 +11,7 @@ import be.hogent.tarsos.dsp.PercussionOnsetDetector.PercussionHandler;
 import input.InputStartOnly;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -76,10 +78,11 @@ public class MicrophoneTappingPanel extends JPanel{
         bigEndian = false;
         mixerList = new ArrayList<Mixer>();
 
-        this.setMinimumSize(new Dimension(200,200));
-        this.setPreferredSize(new Dimension(200,200));
-        this.setMaximumSize(new Dimension(200,200));
+        this.setMinimumSize(new Dimension(300,200));
+        this.setPreferredSize(new Dimension(300,200));
+        //this.setMaximumSize(new Dimension(250,200));
         this.setLayout(new BorderLayout());
+        this.setBorder(BorderFactory.createTitledBorder("Microphone"));
 
         JPanel mixerPanel = new JPanel(new BorderLayout());        
         this.add(mixerPanel,BorderLayout.NORTH);
@@ -135,7 +138,7 @@ public class MicrophoneTappingPanel extends JPanel{
 
         JPanel buttonPanel = new JPanel();
         centerPanel.add(buttonPanel,BorderLayout.SOUTH);
-
+        buttonPanel.setLayout(new FlowLayout());
         final JButton btnStart = new JButton(">");
         final JButton btnStop = new JButton("||");
         btnStop.setEnabled(false);

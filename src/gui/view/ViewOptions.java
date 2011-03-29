@@ -5,6 +5,7 @@
 
 package gui.view;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
@@ -24,6 +25,9 @@ public abstract class ViewOptions extends JPanel{
     public ViewOptions(final View parent){
         this.parent = parent;
         this.setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
+        this.setMaximumSize(new Dimension(100,50));
+        this.setMinimumSize(new Dimension(100,50));
+        this.setPreferredSize(new Dimension(100,50));
         final JCheckBox mute = new JCheckBox("mute");
         mute.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
