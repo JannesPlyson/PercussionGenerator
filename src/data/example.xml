@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="data.xsd" >
+    <track>
+        <pattern>
+            <length>1000</length>
+            <notes>
+                <note>
+                    <start>300</start>
+                    <duration>100</duration>
+                    <pitch>80</pitch>
+                    <volume>80</volume>
+                </note>
+                <note>
+                    <start>520</start>
+                    <duration>100</duration>
+                    <pitch>80</pitch>
+                    <volume>80</volume>
+                </note>
+                <note>
+                    <start>700</start>
+                    <duration>200</duration>
+                    <pitch>74</pitch>
+                    <volume>89</volume>
+                </note>
+            </notes>
+        </pattern>
+        <view>
+            <simpleView>
+                <grid>10</grid>
+            </simpleView>
+        </view>
+    </track>
+</data>

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="data">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="track" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="track">
+        <xs:complexType>
+            <xs:sequence>                
+                <xs:element name="pattern"/>
+                <xs:element name="view" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="pattern">
+        <xs:complexType>
+            <xs:sequence>                
+                <xs:element name="length" type="strictPosInteger"/>
+                <xs:element name="notes">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="note" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="note">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="start" type="posInteger"/>
+                <xs:element name="duration" type="strictPosInteger"/>
+                <xs:element name="pitch" type="xs:integer"/>
+                <xs:element name="volume" type="posInteger"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="view">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="simpleView"/>
+                <!-- other view elements here -->
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="simpleView">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="grid" type="strictPosInteger"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:simpleType name="posInteger">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="strictPosInteger">
+        <xs:restriction base="xs:integer">
+            <xs:minExclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

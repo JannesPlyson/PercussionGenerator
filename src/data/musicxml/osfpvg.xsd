@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<xs:annotation>
+		<xs:documentation>Open Score Format Piano/Vocal/Guitar (PVG) Profile
+
+Version 1.0 - 7 August 2009
+
+Copyright © 2004-2009 Recordare LLC.
+http://www.recordare.com/
+
+This MusicXML™ work is being provided by the copyright holder under the MusicXML Document Type Definition Public License Version 2.0, available from:
+
+	http://www.recordare.com/dtds/license.html
+
+The Open Score Format provides tighter definitions of the MusicXML language in order to improve quality control for large-scale production of repurposed digital sheet music content. This schema includes both repertoire-independent changes as well as restrictions that limit the schema to the PVG (piano/vocal/guitar) repertoire.</xs:documentation>
+	</xs:annotation>
+	
+	<xs:redefine schemaLocation="http://www.musicxml.org/xsd/musicxml.xsd">
+
+		<!-- General OSF redefinitions -->
+
+		<!-- Simple type redefinitions -->
+		
+		<xs:simpleType name="divisions">
+			<xs:annotation>
+				<xs:documentation>The divisions type is used to express values in terms of the musical divisions defined by the divisions element. MusicXML conservatively defines this as a decimal value to avoid compatibility issues, but OSF redefines it to remove the fractional digits.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="divisions">
+				<xs:fractionDigits value="0"/>
+			</xs:restriction>
+		</xs:simpleType>
+		
+		<xs:simpleType name="ending-number">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes the workaround for unknown ending types and requires a comma-separated list of integers.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="ending-number">
+				<xs:pattern value="[1-9][0-9]*(, ?[1-9][0-9]*)*"/>
+			</xs:restriction>
+		</xs:simpleType>
+	
+		<xs:simpleType name="kind-value">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes the functional sixths and Tristan kinds.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="kind-value">
+				<xs:enumeration value="major"/>
+				<xs:enumeration value="minor"/>
+				<xs:enumeration value="augmented"/>
+				<xs:enumeration value="diminished"/>
+				<xs:enumeration value="dominant"/>
+				<xs:enumeration value="major-seventh"/>
+				<xs:enumeration value="minor-seventh"/>
+				<xs:enumeration value="diminished-seventh"/>
+				<xs:enumeration value="augmented-seventh"/>
+				<xs:enumeration value="half-diminished"/>
+				<xs:enumeration value="major-minor"/>
+				<xs:enumeration value="major-sixth"/>
+				<xs:enumeration value="minor-sixth"/>
+				<xs:enumeration value="dominant-ninth"/>
+				<xs:enumeration value="major-ninth"/>
+				<xs:enumeration value="minor-ninth"/>
+				<xs:enumeration value="dominant-11th"/>
+				<xs:enumeration value="major-11th"/>
+				<xs:enumeration value="minor-11th"/>
+				<xs:enumeration value="dominant-13th"/>
+				<xs:enumeration value="major-13th"/>
+				<xs:enumeration value="minor-13th"/>
+				<xs:enumeration value="suspended-second"/>
+				<xs:enumeration value="suspended-fourth"/>
+				<xs:enumeration value="pedal"/>
+				<xs:enumeration value="power"/>
+				<xs:enumeration value="other"/>
+				<xs:enumeration value="none"/>
+			</xs:restriction>
+		</xs:simpleType>
+
+		<xs:simpleType name="line-width-type">
+			<xs:annotation>
+			<xs:documentation>OSF PVG limits line-width-type values to the standard definitions listed in the MusicXML 2.0 DTD.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="line-width-type">
+				<xs:enumeration value="beam"/>
+				<xs:enumeration value="bracket"/>
+				<xs:enumeration value="dashes"/>
+				<xs:enumeration value="enclosure"/>
+				<xs:enumeration value="ending"/>
+				<xs:enumeration value="extend"/>
+				<xs:enumeration value="heavy barline"/>
+				<xs:enumeration value="leger"/>
+				<xs:enumeration value="light barline"/>
+				<xs:enumeration value="octave shift"/>
+				<xs:enumeration value="pedal"/>
+				<xs:enumeration value="slur middle"/>
+				<xs:enumeration value="slur tip"/>
+				<xs:enumeration value="staff"/>
+				<xs:enumeration value="stem"/>
+				<xs:enumeration value="tie middle"/>
+				<xs:enumeration value="tie tip"/>
+				<xs:enumeration value="tuplet bracket"/>
+				<xs:enumeration value="wedge"/>
+			</xs:restriction>
+		</xs:simpleType>
+
+		<!-- Attribute group redefinitions -->
+		
+		<xs:attributeGroup name="group-name-text">
+			<xs:annotation>
+				<xs:documentation>OSF removes the print-style and justify attribute groups whose use here is deprecated in MusicXML 2.0 in favor of the new group-name-display and group-abbreviation-display elements.</xs:documentation>
+			</xs:annotation>
+		</xs:attributeGroup>
+
+		<xs:attributeGroup name="measure-attributes">
+			<xs:annotation>
+				<xs:documentation>OSF removes non-controlling measures. </xs:documentation>
+			</xs:annotation>
+			<xs:attribute name="number" type="xs:token" use="required"/>
+			<xs:attribute name="implicit" type="yes-no"/>
+			<xs:attribute name="non-controlling" type="yes-no" use="prohibited"/>
+			<xs:attribute name="width" type="tenths"/>
+		</xs:attributeGroup>
+
+		<xs:attributeGroup name="part-name-text">
+			<xs:annotation>
+				<xs:documentation>OSF removes the print-style and justify attribute groups whose use here is deprecated in MusicXML 2.0 in favor of the new part-name-display and part-abbreviation-display elements.</xs:documentation>
+			</xs:annotation>
+			<xs:attributeGroup ref="print-object"/>
+		</xs:attributeGroup>
+		
+		<xs:attributeGroup name="print-attributes">
+			<xs:annotation>
+				<xs:documentation>OSF removes the deprecated staff-spacing attribute.</xs:documentation>
+			</xs:annotation>
+			<xs:attribute name="staff-spacing" type="tenths" use="prohibited"/>
+			<xs:attribute name="new-system" type="yes-no"/>
+			<xs:attribute name="new-page" type="yes-no"/>
+			<xs:attribute name="blank-page" type="xs:positiveInteger"/>
+			<xs:attribute name="page-number" type="xs:token"/>
+		</xs:attributeGroup>
+		
+		<!-- Complex type redefinitions -->
+		
+		<xs:complexType name="appearance">
+			<xs:annotation>
+				<xs:documentation>OSF PVG adds a hyphen-distance element to control hyphen spacing in lyrics. The hyphen-distance content is the standard distance between hyphens measured in tenths of staff space.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="appearance">
+					<xs:sequence>
+						<xs:element name="hyphen-distance" type="tenths" minOccurs="0"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	
+		<xs:complexType name="bracket">
+			<xs:annotation>
+				<xs:documentation>OSF PVG adds dashed line formatting attributes to brackets.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="bracket">
+					<xs:attribute name="dash-length" type="tenths"/>
+					<xs:attribute name="space-length" type="tenths"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="dashes">
+			<xs:annotation>
+				<xs:documentation>OSF PVG adds dashed line formatting attributes to dashes.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="dashes">
+					<xs:attribute name="dash-length" type="tenths"/>
+					<xs:attribute name="space-length" type="tenths"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="empty-line">
+			<xs:annotation>
+				<xs:documentation>OSF PVG adds dashed line formatting attributes to the empty-line type used by the scoop, doit, plop, and falloff elements..</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="empty-line">
+					<xs:attribute name="dash-length" type="tenths"/>
+					<xs:attribute name="space-length" type="tenths"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="extend">
+			<xs:annotation>
+				<xs:documentation>OSF adds optional type and positioning attributes to the extend element for more formatting control than is possible in MusicXML 2.0.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="extend">
+					<xs:attribute name="type" type="start-stop-continue"/>
+					<xs:attributeGroup ref="position"/>
+				</xs:extension>
+				</xs:complexContent>
+		</xs:complexType>
+		
+		<xs:complexType name="frame">
+			<xs:annotation>
+				<xs:documentation>OSF PVG adds a way to indicate whether unplayed strings display with an x above the string in the chord diagram. The unplayed attribute for the frame type indicates what to display above a string that has no associated frame-note element. Typical values are x and the empty string. If the attribute is not present, the display of the unplayed string is application-defined.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="frame">
+					<xs:attribute name="unplayed" type="xs:token"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	
+		<xs:complexType name="glissando">
+			<xs:annotation>
+				<xs:documentation>OSF PVG adds dashed line formatting attributes to glissandos.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="glissando">
+					<xs:attribute name="dash-length" type="tenths"/>
+					<xs:attribute name="space-length" type="tenths"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="key">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes the number attribute for different key signatures per staff.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="key">
+					<xs:sequence>
+						<xs:choice>
+						   <xs:group ref="traditional-key"/>
+						   <xs:group ref="non-traditional-key" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:choice>
+						<xs:element name="key-octave" type="key-octave" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="number" type="staff-number" use="prohibited"/>
+					<xs:attributeGroup ref="print-style"/>
+					<xs:attributeGroup ref="print-object"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+		
+		<xs:complexType name="octave-shift">
+			<xs:annotation>
+				<xs:documentation>OSF PVG adds dashed line formatting attributes to octave-shift elements</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="octave-shift">
+					<xs:attribute name="dash-length" type="tenths"/>
+					<xs:attribute name="space-length" type="tenths"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="slide">
+			<xs:annotation>
+				<xs:documentation>OSF PVG adds dashed line formatting attributes to slides.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="slide">
+					<xs:attribute name="dash-length" type="tenths"/>
+					<xs:attribute name="space-length" type="tenths"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="slur">
+			<xs:annotation>
+				<xs:documentation>OSF PVG adds dashed line formatting attributes to slurs.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="slur">
+					<xs:attribute name="dash-length" type="tenths"/>
+					<xs:attribute name="space-length" type="tenths"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="sound">
+			<xs:annotation>
+				<xs:documentation>OSF removes the pan and elevation attributes that are deprecated in MusicXML 2.0.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="sound">
+					<xs:sequence>
+						<xs:element name="midi-instrument" type="midi-instrument" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="offset" type="offset" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="tempo" type="non-negative-decimal"/>
+					<xs:attribute name="dynamics" type="non-negative-decimal"/>
+					<xs:attribute name="dacapo" type="yes-no"/>
+					<xs:attribute name="segno" type="xs:token"/>
+					<xs:attribute name="dalsegno" type="xs:token"/>
+					<xs:attribute name="coda" type="xs:token"/>
+					<xs:attribute name="tocoda" type="xs:token"/>
+					<xs:attribute name="divisions" type="divisions"/>
+					<xs:attribute name="forward-repeat" type="yes-no"/>
+					<xs:attribute name="fine" type="xs:token"/>
+					<xs:attribute name="time-only" type="xs:token"/>
+					<xs:attribute name="pizzicato" type="yes-no"/>
+					<xs:attribute name="damper-pedal" type="yes-no-number"/>
+					<xs:attribute name="soft-pedal" type="yes-no-number"/>
+					<xs:attribute name="sostenuto-pedal" type="yes-no-number"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="tied">
+			<xs:annotation>
+				<xs:documentation>OSF PVG adds dashed line formatting attributes to ties.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="tied">
+					<xs:attribute name="dash-length" type="tenths"/>
+					<xs:attribute name="space-length" type="tenths"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="time">
+			<xs:annotation>
+				<xs:documentation>OSF removes the number attribute for different time signatures per staff.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="time">
+					<xs:choice>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="beats" type="xs:string"/>
+							<xs:element name="beat-type" type="xs:string"/>
+						</xs:sequence>
+						<xs:element name="senza-misura" type="empty"/>
+					</xs:choice>
+					<xs:attribute name="number" type="staff-number" use="prohibited"/>
+					<xs:attribute name="symbol" type="time-symbol"/>
+					<xs:attributeGroup ref="print-style"/>
+					<xs:attributeGroup ref="print-object"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="transpose">
+			<xs:annotation>
+				<xs:documentation>OSF requires the diatonic element and eliminates the double element.</xs:documentation>
+				</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="transpose">
+					<xs:sequence>
+						<xs:element name="diatonic" type="xs:integer" minOccurs="1"/>
+						<xs:element name="chromatic" type="semitones"/>
+						<xs:element name="octave-change" type="xs:integer" minOccurs="0"/>
+					</xs:sequence>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<!-- Element group redefinitions -->
+
+		<xs:group name="editorial-voice">
+			<xs:annotation>
+				<xs:documentation>OSF requires the voice element to be present in the note and forward elements.</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:group ref="footnote" minOccurs="0"/>
+				<xs:group ref="level" minOccurs="0"/>
+				<xs:group ref="voice" minOccurs="1"/>
+			</xs:sequence>
+		</xs:group>
+		
+		<!-- PVG-specific redefinitions -->
+
+		<!-- Simple type redefinitions -->
+		
+		<xs:simpleType name="accidental-value">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes support for quarter-tone accidentals.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="accidental-value">
+				<xs:enumeration value="sharp"/>
+				<xs:enumeration value="natural"/>
+				<xs:enumeration value="flat"/>
+				<xs:enumeration value="double-sharp"/>
+				<xs:enumeration value="sharp-sharp"/>
+				<xs:enumeration value="flat-flat"/>
+				<xs:enumeration value="natural-sharp"/>
+				<xs:enumeration value="natural-flat"/>
+			</xs:restriction>
+		</xs:simpleType>
+
+		<xs:simpleType name="bar-style">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes the heavy, tick, and short bar styles.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="bar-style">
+				<xs:enumeration value="regular"/>
+				<xs:enumeration value="dotted"/>
+				<xs:enumeration value="dashed"/>
+				<xs:enumeration value="light-light"/>
+				<xs:enumeration value="light-heavy"/>
+				<xs:enumeration value="heavy-light"/>
+				<xs:enumeration value="heavy-heavy"/>
+				<xs:enumeration value="none"/>
+			</xs:restriction>
+		</xs:simpleType>
+	
+		<xs:simpleType name="clef-sign">
+			<xs:annotation>
+				<xs:documentation>OSF PVG only supports G clef sign for treble, F clef sign for bass, and percussion clef sign for drum patterns.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="clef-sign">
+				<xs:enumeration value="G"/>
+				<xs:enumeration value="F"/>
+				<xs:enumeration value="percussion"/>
+			</xs:restriction>
+		</xs:simpleType>
+	
+		<xs:simpleType name="fifths">
+			<xs:annotation>
+				<xs:documentation>OSF PVG limits fifths to values between -7 and 7.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="fifths">
+				<xs:minInclusive value="-7"/>
+				<xs:maxInclusive value="7"/>
+			</xs:restriction>
+		</xs:simpleType>
+
+		<xs:simpleType name="mode">
+			<xs:annotation>
+				<xs:documentation>OSF PVG limits mode values to the standard definitions listed in the MusicXML 2.0 DTD.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="mode">
+				<xs:enumeration value="major"/>
+				<xs:enumeration value="minor"/>
+				<xs:enumeration value="dorian"/>
+				<xs:enumeration value="phrygian"/>
+				<xs:enumeration value="lydian"/>
+				<xs:enumeration value="mixolydian"/>
+				<xs:enumeration value="aeolian"/>
+				<xs:enumeration value="ionian"/>
+				<xs:enumeration value="locrian"/>
+			</xs:restriction>
+		</xs:simpleType>
+
+		<xs:simpleType name="notehead-value">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes support for shape-note noteheads and other noteheads not used in PVG repertoire.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="notehead-value">
+				<xs:enumeration value="slash"/>
+				<xs:enumeration value="triangle"/>
+				<xs:enumeration value="diamond"/>
+				<xs:enumeration value="x"/>
+				<xs:enumeration value="circle-x"/>
+				<xs:enumeration value="inverted triangle"/>
+				<xs:enumeration value="normal"/>
+				<xs:enumeration value="cluster"/>
+				<xs:enumeration value="none"/>
+			</xs:restriction>
+		</xs:simpleType>
+
+		<xs:simpleType name="number-of-lines">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes support for double or triple lines in text decoration.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="number-of-lines">
+				<xs:minInclusive value="0"/>
+				<xs:maxInclusive value="1"/>
+			</xs:restriction>
+		</xs:simpleType>
+
+		<xs:simpleType name="time-symbol">
+			<xs:annotation>
+				<xs:documentation>OSF PVG excludes the single-number value for time-symbol.</xs:documentation>
+			</xs:annotation>
+			<xs:restriction base="time-symbol">
+				<xs:enumeration value="common"/>
+				<xs:enumeration value="cut"/>
+				<xs:enumeration value="normal"/>
+			</xs:restriction>
+		</xs:simpleType>
+		
+		<!-- Complex type redefinitions -->
+
+		<!-- Redefinitions derived from attributes.mod elements -->
+		
+		<xs:complexType name="attributes">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes the deprecated directive element. For PVG, the transpose element is also removed.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="attributes">
+					<xs:sequence>
+						<xs:group ref="editorial"/>
+						<xs:element name="divisions" type="positive-divisions" minOccurs="0"/>
+						<xs:element name="key" type="key" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="time" type="time" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="staves" type="xs:nonNegativeInteger" minOccurs="0"/>
+						<xs:element name="part-symbol" type="part-symbol" minOccurs="0"/>
+						<xs:element name="instruments" type="xs:nonNegativeInteger" minOccurs="0"/>
+						<xs:element name="clef" type="clef" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="staff-details" type="staff-details" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="measure-style" type="measure-style" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+		
+		<xs:complexType name="staff-details">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes the staff-tuning element, the capo element, and the show-frets attribute.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="staff-details">
+					<xs:sequence>
+						<xs:element name="staff-type" type="staff-type" minOccurs="0"/>
+						<xs:element name="staff-lines" type="xs:nonNegativeInteger" minOccurs="0"/>
+						<xs:element name="staff-size" type="non-negative-decimal" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="number" type="staff-number"/>
+					<xs:attribute name="show-frets" type="show-frets" use="prohibited"/>
+					<xs:attributeGroup ref="print-object"/>
+					<xs:attributeGroup ref="print-spacing"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<!-- Redefinitions derived from barline.mod elements -->
+
+		<xs:complexType name="barline">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes wavy-line, segno, coda, and fermata element associated with a barline instead of a direction, including their playback attributes.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="barline">
+					<xs:sequence>
+						<xs:element name="bar-style" type="bar-style-color" minOccurs="0"/>
+						<xs:group ref="editorial"/>
+						<xs:element name="ending" type="ending" minOccurs="0"/>
+						<xs:element name="repeat" type="repeat" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="location" type="right-left-middle" default="right"/>
+					<xs:attribute name="segno" type="xs:token" use="prohibited"/>
+					<xs:attribute name="coda" type="xs:token" use="prohibited"/>
+					<xs:attribute name="divisions" type="divisions" use="prohibited"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	
+		<!-- Redefinitions derived from common.mod elements -->
+		
+		<xs:complexType name="dynamics">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes the other-dynamics element.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="dynamics">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="p" type="empty"/>
+						<xs:element name="pp" type="empty"/>
+						<xs:element name="ppp" type="empty"/>
+						<xs:element name="pppp" type="empty"/>
+						<xs:element name="ppppp" type="empty"/>
+						<xs:element name="pppppp" type="empty"/>
+						<xs:element name="f" type="empty"/>
+						<xs:element name="ff" type="empty"/>
+						<xs:element name="fff" type="empty"/>
+						<xs:element name="ffff" type="empty"/>
+						<xs:element name="fffff" type="empty"/>
+						<xs:element name="ffffff" type="empty"/>
+						<xs:element name="mp" type="empty"/>
+						<xs:element name="mf" type="empty"/>
+						<xs:element name="sf" type="empty"/>
+						<xs:element name="sfp" type="empty"/>
+						<xs:element name="sfpp" type="empty"/>
+						<xs:element name="fp" type="empty"/>
+						<xs:element name="rf" type="empty"/>
+						<xs:element name="rfz" type="empty"/>
+						<xs:element name="sfz" type="empty"/>
+						<xs:element name="sffz" type="empty"/>
+						<xs:element name="fz" type="empty"/>
+					</xs:choice>
+					<xs:attributeGroup ref="print-style"/>
+					<xs:attributeGroup ref="placement"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	
+		<!-- Redefinitions derived from direction.mod elements -->
+
+		<xs:complexType name="direction-type">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes the harp-pedals, damp, damp-all, eyeglasses, scordatura, and accordion-registration elements.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="direction-type">
+					<xs:choice>
+						<xs:element name="rehearsal" type="rehearsal" maxOccurs="unbounded"/>
+						<xs:element name="segno" type="empty-print-style" maxOccurs="unbounded"/>
+						<xs:element name="words" type="formatted-text" maxOccurs="unbounded"/>
+						<xs:element name="coda" type="empty-print-style" maxOccurs="unbounded"/>
+						<xs:element name="wedge" type="wedge"/>
+						<xs:element name="dynamics" type="dynamics" maxOccurs="unbounded"/>
+						<xs:element name="dashes" type="dashes"/>
+						<xs:element name="bracket" type="bracket"/>
+						<xs:element name="pedal" type="pedal"/>
+						<xs:element name="metronome" type="metronome"/>
+						<xs:element name="octave-shift" type="octave-shift"/>
+						<xs:element name="image" type="image"/>
+						<xs:element name="other-direction" type="other-direction"/>
+					</xs:choice>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<!-- Redefinitions derived from note.mod elements -->
+		
+		<xs:complexType name="articulations">
+			<xs:annotation>
+				<xs:documentation>OSF removes the other-articulation element.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="articulations">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="accent" type="empty-placement"/>
+						<xs:element name="strong-accent" type="strong-accent"/>
+						<xs:element name="staccato" type="empty-placement"/>
+						<xs:element name="tenuto" type="empty-placement"/>
+						<xs:element name="detached-legato" type="empty-placement"/>
+						<xs:element name="staccatissimo" type="empty-placement"/>
+						<xs:element name="spiccato" type="empty-placement"/>
+						<xs:element name="scoop" type="empty-line"/>
+						<xs:element name="plop" type="empty-line"/>
+						<xs:element name="doit" type="empty-line"/>
+						<xs:element name="falloff" type="empty-line"/>
+						<xs:element name="breath-mark" type="empty-placement"/>
+						<xs:element name="caesura" type="empty-placement"/>
+						<xs:element name="stress" type="empty-placement"/>
+						<xs:element name="unstress" type="empty-placement"/>
+					</xs:choice>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="beam">
+			<xs:annotation>
+				<xs:documentation>OSF removes the repeater and fan attributes.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleContent>
+				<xs:restriction base="beam">
+					<xs:attribute name="repeater" type="yes-no" use="prohibited"/>
+					<xs:attribute name="fan" type="fan" use="prohibited"/>
+				</xs:restriction>
+			</xs:simpleContent>
+		</xs:complexType>
+
+		<xs:complexType name="ornaments">
+			<xs:annotation>
+				<xs:documentation>OSF removes the schleifer and other-ornament elements.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="ornaments">
+					<xs:sequence minOccurs="0" maxOccurs="unbounded">
+						<xs:choice>
+							<xs:element name="trill-mark" type="empty-trill-sound"/>
+							<xs:element name="turn" type="empty-trill-sound"/>
+							<xs:element name="delayed-turn" type="empty-trill-sound"/>
+							<xs:element name="inverted-turn" type="empty-trill-sound"/>
+							<xs:element name="shake" type="empty-trill-sound"/>
+							<xs:element name="wavy-line" type="wavy-line"/>
+							<xs:element name="mordent" type="mordent"/>
+							<xs:element name="inverted-mordent" type="mordent"/>
+							<xs:element name="tremolo" type="tremolo"/>
+						</xs:choice>
+						<xs:element name="accidental-mark" type="accidental-mark" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+
+		<xs:complexType name="technical">
+			<xs:annotation>
+				<xs:documentation>OSF removes all the technical indications except fingering and bend.</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:restriction base="technical">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="fingering" type="fingering"/>
+						<xs:element name="bend" type="bend"/>
+					</xs:choice>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	
+		<!-- Element group redefinitions -->
+		
+		<!-- These redefinitions must refer to parent schema, not grandparent schema. -->
+		
+		<xs:group name="harmony-chord">
+			<xs:annotation>
+				<xs:documentation>OSF PVG removes the function and inversion elements.</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:choice>
+					<xs:element name="root" type="root"/>
+				</xs:choice>
+				<xs:element name="kind" type="kind"/>
+				<xs:element name="bass" type="bass" minOccurs="0"/>
+				<xs:element name="degree" type="degree" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:group>
+
+		<xs:group name="music-data">
+			<xs:annotation>
+				<xs:documentation>OSF PVG does not include the figured-bass element.</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="note" type="note"/>
+					<xs:element name="backup" type="backup"/>
+					<xs:element name="forward" type="forward"/>
+					<xs:element name="direction" type="direction"/>
+					<xs:element name="attributes" type="attributes"/>
+					<xs:element name="harmony" type="harmony"/>
+					<xs:element name="print" type="print"/>
+					<xs:element name="sound" type="sound"/>
+					<xs:element name="barline" type="barline"/>
+					<xs:element name="grouping" type="grouping"/>
+					<xs:element name="link" type="link"/>
+					<xs:element name="bookmark" type="bookmark"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:group>
+	</xs:redefine>
+</xs:schema>
