@@ -48,12 +48,11 @@ public class MicrophoneTappingPanel extends JPanel{
     private DataLine.Info dataLineInfoLittleEndian;
     private DataLine.Info dataLineInfoBigEndian;
     private float sampleRate;
-    private int bufferSize,overlap;
-    private AudioInputStream stream;    
+    private int bufferSize,overlap;    
+    private AudioDispatcher dispatcher;
     private double sensitivity;
     private JProgressBar progressBar;
-    private int tresholdInterval;
-    //private ArrayList<Double> times;
+    private int tresholdInterval;    
     private InputStartOnly input;
     private int defaultPitch,defaultVelocity;
     private TrackCollection trackCollection;
@@ -67,7 +66,7 @@ public class MicrophoneTappingPanel extends JPanel{
         sampleRate = 44100;
         bufferSize = 1024;
         overlap = 0;
-        stream = null;        
+        dispatcher = null;
         sensitivity = 10;
         tresholdInterval = 4000;
         defaultPitch = 50;
@@ -202,9 +201,13 @@ public class MicrophoneTappingPanel extends JPanel{
             progressBarTimer.cancel();
         }
         progressBarTimer = null;
-        try{
-            stream.close();
-        }catch(Exception exc){}
+        if(dispatcher != null){
+            try{
+                dispatcher.stop();
+            }catch(Exception exc){
+                exc.printStackTrace();
+            }
+        }
     }
 
     private void checkTreshold(final int min,final int max){
@@ -250,9 +253,9 @@ public class MicrophoneTappingPanel extends JPanel{
     }
 
     private void setMixer(int i){
-        if(stream != null){
+        if(dispatcher != null){
             try{
-                stream.close();
+                dispatcher.stop();
             }catch(Exception exc){
                 exc.printStackTrace();
             }
@@ -271,9 +274,9 @@ public class MicrophoneTappingPanel extends JPanel{
                 line.open(dataLineInfoLittleEndian.getFormats()[0], numberOfSamples);
                 line.start();
             }
-            stream = new AudioInputStream(line);
+            AudioInputStream stream = new AudioInputStream(line);
             //create a new dispatcher
-            AudioDispatcher dispatcher = new AudioDispatcher(stream, bufferSize, overlap);
+            dispatcher = new AudioDispatcher(stream, bufferSize, overlap);
 
             //add a processor, handle percussion event.            
             dispatcher.addAudioProcessor(new PercussionOnsetDetector(sampleRate, bufferSize,overlap, new PercussionHandler() {

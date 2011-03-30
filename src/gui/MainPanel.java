@@ -5,18 +5,26 @@
 
 package gui;
 
+import java.awt.event.ActionEvent;
 import model.TrackCollection;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.sound.midi.Instrument;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import languages.LanguageDependent;
+import model.Note;
+import model.Pair;
+import model.Track;
+import quantisation.NoteQuantizer;
 import sound.MidiPlayer;
 import sound.MidiPlayerTimer;
 
@@ -67,32 +75,23 @@ public class MainPanel extends JPanel implements LanguageDependent{
                 trackCollection.addChooseInstrument(menuTrack, caller);
                 trackCollection.addMenuRemoveTrack(menuTrack, caller);                
                 trackCollection.addMenuSound(popup,caller);
-//                JMenuItem itemOpenTapping = new JMenuItem("From tapping");
-//                itemOpenTapping.addActionListener(new ActionListener() {
-//                    public void actionPerformed(ActionEvent e) {
-//                        tappingDialog.setVisible(true);
-//                    }
-//                });
-//                menuAddTrack.add(itemOpenTapping);
-//                JMenuItem itemOpenTappingMicrophone = new JMenuItem("From microphone");
-//                itemOpenTappingMicrophone.addActionListener(new ActionListener() {
-//                    public void actionPerformed(ActionEvent e) {
-//                        microphoneTappingDialog.setVisible(true);
-//                    }
-//                });
-//                menuAddTrack.add(itemOpenTappingMicrophone);
-//                if(caller instanceof Track){
-//                    JMenuItem itemAddToTapping = new JMenuItem("Add to tapping");
-//                    popup.add(itemAddToTapping);
-//                    itemAddToTapping.addActionListener(new ActionListener() {
-//                        public void actionPerformed(ActionEvent e) {
-//                            tappingDialog.getTrackCollection().addTrack(((Track)caller).getClone());
-//                            if(!tappingDialog.isVisible()){
-//                                tappingDialog.setVisible(true);
-//                            }
-//                        }
-//                    });
-//                }
+                if(caller instanceof Track){
+                    JMenuItem itemQuantize = new JMenuItem("quantize");
+                    popup.add(itemQuantize);
+                    itemQuantize.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent ae) {
+                            NoteQuantizer nq = new NoteQuantizer();
+                            ArrayList<Pair<Integer,Note>> notes = nq.getNotes(((Track)caller).getPattern());
+                            if(notes == null){
+                                System.out.println("no notes");
+                            }else{
+                                for(int i = 0; i < notes.size(); i++){
+                                    System.out.println(notes.get(i).first);
+                                }
+                            }
+                        }
+                    });
+                }
             }
         };
     }
